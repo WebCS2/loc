@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto GIF & Audio</title>
+  <title>GIF with Background Audio</title>
   <style>
     body {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -17,36 +16,33 @@
     img {
       max-width: 90%;
       max-height: 80%;
-      cursor: pointer;
-      border: 2px solid white;
     }
   </style>
 </head>
 <body>
-  <!-- GIF Display -->
-  <img id="gif" src="https://image2url.com/r2/default/gifs/1773342276329-64149ca8-9d6c-47aa-a22f-6f6235ea06d5.gif" alt="Animated GIF">
+  <img src="https://image2url.com/r2/default/gifs/1773342276329-64149ca8-9d6c-47aa-a22f-6f6235ea06d5.gif" alt="GIF">
 
-  <!-- Audio Player -->
   <audio id="audio" loop>
     <source src="https://image2url.com/r2/default/audio/1773342673458-e121a58c-58df-41d9-800c-e7fa998522a5.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
   </audio>
 
   <script>
     const audio = document.getElementById('audio');
 
-    // Try to play audio automatically on page load
-    window.addEventListener('load', () => {
-      // Some browsers require a muted play first
-      audio.muted = true;
-      audio.play().then(() => {
-        audio.muted = false; // Unmute after autoplay
-      }).catch(() => {
-        // If autoplay fails, try playing after a tiny user gesture
+    // Attempt to autoplay on page load
+    window.addEventListener('load', async () => {
+      try {
+        audio.muted = true; // mute first to allow autoplay
+        await audio.play(); // play muted
+        audio.muted = false; // unmute after starting
+        console.log("Audio started in the background");
+      } catch (err) {
+        console.log("Autoplay blocked, audio will play on user interaction");
+        // fallback: play on first click
         document.body.addEventListener('click', () => {
           audio.play();
         }, { once: true });
-      });
+      }
     });
   </script>
 </body>
