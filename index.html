@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GIF and Audio Player</title>
+  <title>Auto GIF & Audio</title>
   <style>
     body {
       display: flex;
@@ -13,8 +13,6 @@
       height: 100vh;
       background-color: #000;
       margin: 0;
-      color: white;
-      font-family: sans-serif;
     }
     img {
       max-width: 90%;
@@ -22,17 +20,9 @@
       cursor: pointer;
       border: 2px solid white;
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-  <h2>Click the GIF to play audio</h2>
-
   <!-- GIF Display -->
   <img id="gif" src="https://image2url.com/r2/default/gifs/1773342276329-64149ca8-9d6c-47aa-a22f-6f6235ea06d5.gif" alt="Animated GIF">
 
@@ -43,12 +33,20 @@
   </audio>
 
   <script>
-    const gif = document.getElementById('gif');
     const audio = document.getElementById('audio');
 
-    // Play audio when GIF is clicked
-    gif.addEventListener('click', () => {
-      audio.play();
+    // Try to play audio automatically on page load
+    window.addEventListener('load', () => {
+      // Some browsers require a muted play first
+      audio.muted = true;
+      audio.play().then(() => {
+        audio.muted = false; // Unmute after autoplay
+      }).catch(() => {
+        // If autoplay fails, try playing after a tiny user gesture
+        document.body.addEventListener('click', () => {
+          audio.play();
+        }, { once: true });
+      });
     });
   </script>
 </body>
